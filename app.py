@@ -178,7 +178,7 @@ else:
         st.session_state.selected_option = "TIMEOUT"
 
     # Live Question Headers
-    col1, col2 = st.columns()
+    col1, col2 = st.columns(2)
     with col1:
         st.write(
             f"**Question {current_idx + 1} of {len(st.session_state.active_questions)}**"
