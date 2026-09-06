@@ -105,6 +105,8 @@ def initialize_game():
 
     # Shuffle the options for each selected question so option order changes
     for q in selected_questions:
+        # Create a copy so we don't accidentally modify the master list structurally
+        q["options"] = list(q["options"])
         random.shuffle(q["options"])
 
     st.session_state.active_questions = selected_questions
@@ -166,25 +168,26 @@ else:
     current_idx = st.session_state.current_question
     q_data = st.session_state.active_questions[current_idx]
 
-    # Live Question and Timing Analytics Matrix
-    col1, col2 = st.columns([3, 1])
+    # Calculate time remaining safely upfront
+    elapsed_time = time.time() - st.session_state.start_time
+    time_left = max(0, int(SECONDS_PER_QUESTION - elapsed_time))
+
+    # Check for timeout before drawing anything new
+    if time_left == 0 and not st.session_state.answered:
+        st.session_state.answered = True
+        st.session_state.selected_option = "TIMEOUT"
+
+    # Live Question Headers
+    col1, col2 = st.columns()
     with col1:
         st.write(
             f"**Question {current_idx + 1} of {len(st.session_state.active_questions)}**"
         )
     with col2:
-        # Calculate time remaining
-        elapsed_time = time.time() - st.session_state.start_time
-        time_left = max(0, int(SECONDS_PER_QUESTION - elapsed_time))
-
-        if time_left > 0 and not st.session_state.answered:
+        if not st.session_state.answered:
             st.metric(label="⏱️ Time Remaining", value=f"{time_left}s")
-            # Auto-refresh app after 1 second to update the countdown
-            time.sleep(1)
-            st.rerun()
-        elif time_left == 0 and not st.session_state.answered:
-            st.session_state.answered = True
-            st.session_state.selected_option = "TIMEOUT"
+        else:
+            st.write("")
 
     st.progress((current_idx) / len(st.session_state.active_questions))
 
@@ -242,4 +245,12 @@ else:
         if st.button("Reset Game"):
             reset_quiz()
             st.rerun()
+
+    # --- CRITICAL TIMER TRICK ---
+    # We sleep and rerun at the very *END* of the file code loop.
+    # This guarantees Streamlit finishes rendering the entire visual interface before refreshing!
+    if time_left > 0 and not st.session_state.answered:
+        time.sleep(1)
+        st.rerun()
+
 
