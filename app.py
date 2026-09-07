@@ -1,11 +1,9 @@
 import random
-from textwrap import dedent
-
 import streamlit as st
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -17,328 +15,118 @@ st.set_page_config(
 
 
 # ============================================================
-# PROFESSIONAL CUSTOM CSS
+# CUSTOM CSS
+# IMPORTANT:
+# We use st.html() instead of putting HTML inside st.markdown().
 # ============================================================
 
-st.markdown(
-    dedent(
-        """
-        <style>
+CSS = """
+<style>
 
-        /* ==================================================
-           GLOBAL APP
-        ================================================== */
+html, body, [class*="css"] {
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", sans-serif;
+}
 
-        .stApp {
-            background:
-                radial-gradient(
-                    circle at 10% 0%,
-                    rgba(75, 150, 255, 0.12),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 90% 0%,
-                    rgba(255, 75, 75, 0.10),
-                    transparent 30%
-                ),
-                #080d19;
-        }
+.stApp {
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(59, 130, 246, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(239, 68, 68, 0.10),
+            transparent 30%
+        ),
+        #080d18;
+}
 
-        .main {
-            padding-top: 1rem;
-        }
+/* Sidebar */
 
-        /* ==================================================
-           HERO
-        ================================================== */
+section[data-testid="stSidebar"] {
+    background: #070b14;
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
 
-        .hero {
-            text-align: center;
-            padding: 15px 10px 28px 10px;
-        }
+/* Buttons */
 
-        .hero-title {
-            font-size: clamp(34px, 5vw, 58px);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 8px;
+.stButton > button {
+    border-radius: 12px;
+    min-height: 46px;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.10);
+    transition: 0.2s ease;
+}
 
-            background: linear-gradient(
-                90deg,
-                #ff4b4b,
-                #ff8a65,
-                #4b96ff,
-                #8b5cf6
-            );
+.stButton > button:hover {
+    transform: translateY(-1px);
+}
 
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* Radio buttons */
 
-        .hero-subtitle {
-            color: #9ca3af;
-            font-size: 16px;
-            margin: 0;
-        }
+div[role="radiogroup"] {
+    gap: 10px;
+}
 
-        /* ==================================================
-           INFORMATION CARDS
-        ================================================== */
+div[role="radiogroup"] > label {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 13px 16px;
+    transition: 0.2s ease;
+}
 
-        .info-card {
-            background: rgba(255, 255, 255, 0.045);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 18px;
-            padding: 25px;
-            margin: 10px 0 20px 0;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.20);
-        }
+div[role="radiogroup"] > label:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(96,165,250,0.45);
+}
 
-        .info-card h2 {
-            color: #ffffff;
-            margin-top: 0;
-        }
+/* Metrics */
 
-        .info-card p {
-            color: #9ca3af;
-            line-height: 1.7;
-        }
+div[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 16px;
+    border-radius: 14px;
+}
 
-        /* ==================================================
-           STAT CARDS
-        ================================================== */
+/* Progress */
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.045);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 17px 10px;
-            text-align: center;
-            min-height: 95px;
-        }
+div[data-testid="stProgress"] > div {
+    border-radius: 100px;
+}
 
-        .stat-value {
-            color: #ffffff;
-            font-size: 26px;
-            font-weight: 850;
-        }
+/* Mobile */
 
-        .stat-label {
-            color: #8b95a7;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-top: 4px;
-        }
+@media (max-width: 768px) {
 
-        /* ==================================================
-           QUESTION CARD
-        ================================================== */
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 
-        .question-card {
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(255, 255, 255, 0.075),
-                    rgba(255, 255, 255, 0.025)
-                );
+}
 
-            border: 1px solid rgba(75, 150, 255, 0.25);
-            border-radius: 22px;
-            padding: 30px;
-            margin: 20px 0 24px 0;
+</style>
+"""
 
-            box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.25);
-        }
-
-        .question-number {
-            color: #60a5fa;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 15px;
-        }
-
-        .question-text {
-            color: #f9fafb;
-            font-size: clamp(21px, 3vw, 30px);
-            font-weight: 750;
-            line-height: 1.4;
-            margin-top: 8px;
-        }
-
-        /* ==================================================
-           BADGES
-        ================================================== */
-
-        .badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-right: 6px;
-        }
-
-        .badge-category {
-            background: rgba(75, 150, 255, 0.13);
-            color: #60a5fa;
-            border: 1px solid rgba(75, 150, 255, 0.25);
-        }
-
-        .badge-easy {
-            background: rgba(34, 197, 94, 0.13);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.25);
-        }
-
-        .badge-medium {
-            background: rgba(245, 158, 11, 0.13);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.25);
-        }
-
-        .badge-hard {
-            background: rgba(239, 68, 68, 0.13);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.25);
-        }
-
-        /* ==================================================
-           SIDEBAR
-        ================================================== */
-
-        section[data-testid="stSidebar"] {
-            background: #070b15;
-            border-right: 1px solid rgba(255, 255, 255, 0.07);
-        }
-
-        .sidebar-title {
-            color: #ffffff;
-            font-size: 21px;
-            font-weight: 850;
-        }
-
-        .sidebar-subtitle {
-            color: #6b7280;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        /* ==================================================
-           BUTTONS
-        ================================================== */
-
-        .stButton > button {
-            width: 100%;
-            min-height: 46px;
-            border-radius: 12px;
-            font-weight: 750;
-            transition: all 0.2s ease;
-        }
-
-        .stButton > button:hover {
-            transform: translateY(-1px);
-        }
-
-        /* ==================================================
-           RESULTS
-        ================================================== */
-
-        .result-card {
-            text-align: center;
-            padding: 45px 20px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(75, 150, 255, 0.13),
-                    rgba(124, 77, 255, 0.08)
-                );
-
-            border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 24px;
-
-            box-shadow:
-                0 20px 55px rgba(0, 0, 0, 0.25);
-        }
-
-        .result-score {
-            font-size: clamp(52px, 8vw, 78px);
-            font-weight: 900;
-
-            background: linear-gradient(
-                90deg,
-                #60a5fa,
-                #a78bfa
-            );
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .result-title {
-            color: #ffffff;
-            font-size: 30px;
-            font-weight: 850;
-            margin-top: 5px;
-        }
-
-        .result-message {
-            color: #9ca3af;
-            font-size: 16px;
-        }
-
-        /* ==================================================
-           FOOTER
-        ================================================== */
-
-        .footer {
-            color: #5f6878;
-            text-align: center;
-            font-size: 12px;
-            padding: 35px 0 10px;
-        }
-
-        /* ==================================================
-           MOBILE
-        ================================================== */
-
-        @media (max-width: 768px) {
-
-            .question-card {
-                padding: 20px;
-            }
-
-            .result-card {
-                padding: 35px 15px;
-            }
-
-            .hero {
-                padding-top: 5px;
-            }
-        }
-
-        </style>
-        """
-    ),
-    unsafe_allow_html=True,
-)
+# Use st.html so the CSS is not interpreted as Markdown.
+try:
+    st.html(CSS)
+except AttributeError:
+    # Compatibility fallback for older Streamlit versions.
+    st.markdown(CSS, unsafe_allow_html=True)
 
 
 # ============================================================
-# QUESTION DATABASE
+# QUESTION BANK
 # ============================================================
 
 QUESTIONS = [
 
-    # --------------------------------------------------------
-    # GENERAL KNOWLEDGE
-    # --------------------------------------------------------
+    # ================= GENERAL KNOWLEDGE =================
 
     {
         "question": "What is the largest planet in our solar system?",
@@ -347,39 +135,54 @@ QUESTIONS = [
         "category": "General Knowledge",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which element has the chemical symbol Au?",
-        "options": ["Silver", "Gold", "Copper", "Argon"],
+        "options": ["Silver", "Gold", "Copper", "Iron"],
         "answer": "Gold",
         "category": "General Knowledge",
         "difficulty": "Easy",
     },
+
     {
         "question": "Who wrote the novel '1984'?",
         "options": [
             "George Orwell",
-            "Aldous Huxley",
             "Ernest Hemingway",
+            "Mark Twain",
             "J.R.R. Tolkien",
         ],
         "answer": "George Orwell",
         "category": "General Knowledge",
         "difficulty": "Medium",
     },
+
     {
         "question": "Which instrument traditionally has 88 keys?",
-        "options": ["Violin", "Piano", "Guitar", "Flute"],
+        "options": [
+            "Violin",
+            "Piano",
+            "Guitar",
+            "Trumpet",
+        ],
         "answer": "Piano",
         "category": "General Knowledge",
         "difficulty": "Easy",
     },
+
     {
         "question": "What is the hardest naturally occurring mineral?",
-        "options": ["Quartz", "Diamond", "Titanium", "Graphite"],
+        "options": [
+            "Quartz",
+            "Diamond",
+            "Graphite",
+            "Granite",
+        ],
         "answer": "Diamond",
         "category": "General Knowledge",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which language has the greatest number of native speakers?",
         "options": [
@@ -393,9 +196,7 @@ QUESTIONS = [
         "difficulty": "Medium",
     },
 
-    # --------------------------------------------------------
-    # TECHNOLOGY / COMPUTER SCIENCE
-    # --------------------------------------------------------
+    # ================= TECHNOLOGY =================
 
     {
         "question": "What does CPU stand for?",
@@ -409,20 +210,33 @@ QUESTIONS = [
         "category": "Tech/CS",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which technology is primarily used to style web pages?",
-        "options": ["HTML", "Python", "CSS", "SQL"],
+        "options": [
+            "HTML",
+            "Python",
+            "CSS",
+            "SQL",
+        ],
         "answer": "CSS",
         "category": "Tech/CS",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which data structure follows the LIFO principle?",
-        "options": ["Queue", "Stack", "Array", "Graph"],
+        "options": [
+            "Queue",
+            "Stack",
+            "Array",
+            "Linked List",
+        ],
         "answer": "Stack",
         "category": "Tech/CS",
         "difficulty": "Medium",
     },
+
     {
         "question": "What does API stand for?",
         "options": [
@@ -435,56 +249,61 @@ QUESTIONS = [
         "category": "Tech/CS",
         "difficulty": "Medium",
     },
+
     {
-        "question": "Which algorithm has an average time complexity of O(n log n)?",
+        "question": "Which language is widely used for machine learning?",
         "options": [
-            "Bubble Sort",
-            "Merge Sort",
-            "Linear Search",
-            "Selection Sort",
+            "Python",
+            "HTML",
+            "CSS",
+            "XML",
         ],
-        "answer": "Merge Sort",
-        "category": "Tech/CS",
-        "difficulty": "Medium",
-    },
-    {
-        "question": "Which protocol is commonly used to securely browse websites?",
-        "options": ["HTTP", "HTTPS", "FTP", "SMTP"],
-        "answer": "HTTPS",
-        "category": "Tech/CS",
-        "difficulty": "Easy",
-    },
-    {
-        "question": "Which language is commonly associated with data analysis and machine learning?",
-        "options": ["Python", "HTML", "CSS", "XML"],
         "answer": "Python",
         "category": "Tech/CS",
         "difficulty": "Easy",
     },
+
     {
         "question": "What does SQL primarily allow developers to manage?",
         "options": [
             "Databases",
-            "Computer hardware",
-            "Graphics cards",
-            "Operating system kernels",
+            "Graphics",
+            "Computer Hardware",
+            "Networks",
         ],
         "answer": "Databases",
         "category": "Tech/CS",
         "difficulty": "Easy",
     },
 
-    # --------------------------------------------------------
-    # SCIENCE / MATH
-    # --------------------------------------------------------
+    {
+        "question": "Which protocol is commonly used to securely browse websites?",
+        "options": [
+            "HTTP",
+            "HTTPS",
+            "FTP",
+            "SMTP",
+        ],
+        "answer": "HTTPS",
+        "category": "Tech/CS",
+        "difficulty": "Easy",
+    },
+
+    # ================= SCIENCE =================
 
     {
         "question": "What is the approximate value of pi?",
-        "options": ["2.14", "3.14", "4.14", "5.14"],
+        "options": [
+            "2.14",
+            "3.14",
+            "4.14",
+            "5.14",
+        ],
         "answer": "3.14",
         "category": "Science/Math",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which gas do plants absorb during photosynthesis?",
         "options": [
@@ -497,65 +316,87 @@ QUESTIONS = [
         "category": "Science/Math",
         "difficulty": "Easy",
     },
+
     {
         "question": "What is the SI unit of force?",
-        "options": ["Joule", "Pascal", "Newton", "Watt"],
+        "options": [
+            "Joule",
+            "Pascal",
+            "Newton",
+            "Watt",
+        ],
         "answer": "Newton",
         "category": "Science/Math",
         "difficulty": "Medium",
     },
+
     {
         "question": "What is the square root of 144?",
-        "options": ["10", "11", "12", "14"],
+        "options": [
+            "10",
+            "11",
+            "12",
+            "14",
+        ],
         "answer": "12",
         "category": "Science/Math",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which particle carries a negative electric charge?",
-        "options": ["Proton", "Neutron", "Electron", "Photon"],
+        "options": [
+            "Proton",
+            "Neutron",
+            "Electron",
+            "Photon",
+        ],
         "answer": "Electron",
         "category": "Science/Math",
         "difficulty": "Easy",
     },
+
     {
         "question": "What is the chemical formula for water?",
-        "options": ["CO2", "H2O", "O2", "NaCl"],
+        "options": [
+            "CO2",
+            "H2O",
+            "O2",
+            "NaCl",
+        ],
         "answer": "H2O",
         "category": "Science/Math",
         "difficulty": "Easy",
     },
-    {
-        "question": "What is the approximate speed of light in a vacuum?",
-        "options": [
-            "300,000 km/s",
-            "30,000 km/s",
-            "3,000 km/s",
-            "3,000,000 km/s",
-        ],
-        "answer": "300,000 km/s",
-        "category": "Science/Math",
-        "difficulty": "Medium",
-    },
+
     {
         "question": "What is 15 × 8?",
-        "options": ["100", "110", "120", "130"],
+        "options": [
+            "100",
+            "110",
+            "120",
+            "130",
+        ],
         "answer": "120",
         "category": "Science/Math",
         "difficulty": "Easy",
     },
 
-    # --------------------------------------------------------
-    # HISTORY
-    # --------------------------------------------------------
+    # ================= HISTORY =================
 
     {
         "question": "In which year did World War II end?",
-        "options": ["1942", "1945", "1948", "1950"],
+        "options": [
+            "1942",
+            "1945",
+            "1948",
+            "1950",
+        ],
         "answer": "1945",
         "category": "History",
         "difficulty": "Easy",
     },
+
     {
         "question": "Who was the first president of the United States?",
         "options": [
@@ -568,20 +409,33 @@ QUESTIONS = [
         "category": "History",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which civilization built Machu Picchu?",
-        "options": ["Roman", "Egyptian", "Inca", "Mayan"],
+        "options": [
+            "Roman",
+            "Egyptian",
+            "Inca",
+            "Mayan",
+        ],
         "answer": "Inca",
         "category": "History",
         "difficulty": "Medium",
     },
+
     {
         "question": "The Renaissance began primarily in which country?",
-        "options": ["France", "Italy", "Germany", "Spain"],
+        "options": [
+            "France",
+            "Italy",
+            "Germany",
+            "Spain",
+        ],
         "answer": "Italy",
         "category": "History",
         "difficulty": "Medium",
     },
+
     {
         "question": "Who was known as the Maid of Orléans?",
         "options": [
@@ -594,30 +448,22 @@ QUESTIONS = [
         "category": "History",
         "difficulty": "Easy",
     },
-    {
-        "question": "Which ancient civilization built the pyramids at Giza?",
-        "options": [
-            "Ancient Egyptians",
-            "Romans",
-            "Greeks",
-            "Persians",
-        ],
-        "answer": "Ancient Egyptians",
-        "category": "History",
-        "difficulty": "Easy",
-    },
 
-    # --------------------------------------------------------
-    # GEOGRAPHY
-    # --------------------------------------------------------
+    # ================= GEOGRAPHY =================
 
     {
         "question": "What is the capital city of Australia?",
-        "options": ["Sydney", "Melbourne", "Canberra", "Perth"],
+        "options": [
+            "Sydney",
+            "Melbourne",
+            "Canberra",
+            "Perth",
+        ],
         "answer": "Canberra",
         "category": "Geography",
         "difficulty": "Medium",
     },
+
     {
         "question": "Which is the largest ocean on Earth?",
         "options": [
@@ -630,6 +476,7 @@ QUESTIONS = [
         "category": "Geography",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which country has the largest land area?",
         "options": [
@@ -642,6 +489,7 @@ QUESTIONS = [
         "category": "Geography",
         "difficulty": "Easy",
     },
+
     {
         "question": "Mount Everest belongs to which mountain range?",
         "options": [
@@ -654,6 +502,7 @@ QUESTIONS = [
         "category": "Geography",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which is the world's largest hot desert?",
         "options": [
@@ -666,65 +515,87 @@ QUESTIONS = [
         "category": "Geography",
         "difficulty": "Easy",
     },
-    {
-        "question": "Which continent is the largest by land area?",
-        "options": [
-            "Africa",
-            "Asia",
-            "Europe",
-            "North America",
-        ],
-        "answer": "Asia",
-        "category": "Geography",
-        "difficulty": "Easy",
-    },
 
-    # --------------------------------------------------------
-    # NIGERIA
-    # --------------------------------------------------------
+    # ================= NIGERIA =================
 
     {
         "question": "What is the capital of Nigeria?",
-        "options": ["Lagos", "Abuja", "Ibadan", "Kano"],
+        "options": [
+            "Lagos",
+            "Abuja",
+            "Ibadan",
+            "Kano",
+        ],
         "answer": "Abuja",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "How many states are there in Nigeria?",
-        "options": ["30", "34", "36", "40"],
+        "options": [
+            "30",
+            "34",
+            "36",
+            "40",
+        ],
         "answer": "36",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which city is widely regarded as Nigeria's commercial capital?",
-        "options": ["Abuja", "Lagos", "Kaduna", "Enugu"],
+        "options": [
+            "Abuja",
+            "Lagos",
+            "Kaduna",
+            "Enugu",
+        ],
         "answer": "Lagos",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "What is the currency of Nigeria?",
-        "options": ["Cedi", "Naira", "Shilling", "Franc"],
+        "options": [
+            "Cedi",
+            "Naira",
+            "Shilling",
+            "Franc",
+        ],
         "answer": "Naira",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "Nigeria gained independence from Britain in which year?",
-        "options": ["1957", "1960", "1963", "1970"],
+        "options": [
+            "1957",
+            "1960",
+            "1963",
+            "1970",
+        ],
         "answer": "1960",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which city is the capital of Oyo State?",
-        "options": ["Ogbomoso", "Ibadan", "Iseyin", "Oyo"],
+        "options": [
+            "Ogbomoso",
+            "Ibadan",
+            "Iseyin",
+            "Oyo",
+        ],
         "answer": "Ibadan",
         "category": "Nigeria",
         "difficulty": "Easy",
     },
+
     {
         "question": "Which river gives Nigeria part of its name?",
         "options": [
@@ -737,8 +608,9 @@ QUESTIONS = [
         "category": "Nigeria",
         "difficulty": "Medium",
     },
+
     {
-        "question": "What are the two major rivers that meet at Lokoja?",
+        "question": "Which two major rivers meet at Lokoja?",
         "options": [
             "Niger and Benue",
             "Niger and Kaduna",
@@ -756,52 +628,61 @@ QUESTIONS = [
 # SESSION STATE
 # ============================================================
 
-DEFAULT_STATE = {
-    "quiz_started": False,
-    "quiz_finished": False,
-    "quiz_questions": [],
-    "question_index": 0,
-    "score": 0,
-    "correct_answers": 0,
-    "wrong_answers": 0,
-    "answered": False,
-    "submitted_answer": None,
-    "selected_category": "All Categories",
-    "selected_difficulty": "All Difficulties",
-}
+def initialize_state():
+
+    defaults = {
+        "started": False,
+        "finished": False,
+        "questions": [],
+        "index": 0,
+        "score": 0,
+        "correct": 0,
+        "wrong": 0,
+        "submitted": False,
+        "selected_answer": None,
+        "category": "All Categories",
+        "difficulty": "All Difficulties",
+        "quiz_id": 0,
+    }
+
+    for key, value in defaults.items():
+
+        if key not in st.session_state:
+            st.session_state[key] = value
 
 
-for key, default_value in DEFAULT_STATE.items():
-
-    if key not in st.session_state:
-        st.session_state[key] = default_value
+initialize_state()
 
 
 # ============================================================
-# FUNCTIONS
+# HELPER FUNCTIONS
 # ============================================================
 
-def get_question_pool(category, difficulty):
-    """Return questions matching the selected filters."""
+def filtered_questions(category, difficulty):
 
-    return [
-        question
-        for question in QUESTIONS
-        if (
+    result = []
+
+    for question in QUESTIONS:
+
+        category_match = (
             category == "All Categories"
             or question["category"] == category
         )
-        and (
+
+        difficulty_match = (
             difficulty == "All Difficulties"
             or question["difficulty"] == difficulty
         )
-    ]
+
+        if category_match and difficulty_match:
+            result.append(question)
+
+    return result
 
 
-def start_quiz(category, difficulty):
-    """Create and start a fresh quiz."""
+def start_game(category, difficulty):
 
-    pool = get_question_pool(
+    pool = filtered_questions(
         category,
         difficulty,
     )
@@ -810,115 +691,81 @@ def start_quiz(category, difficulty):
         return False
 
     pool = pool.copy()
+
     random.shuffle(pool)
 
-    # Maximum 10 questions per game
-    quiz_size = min(10, len(pool))
+    st.session_state.questions = pool[:min(10, len(pool))]
 
-    st.session_state.quiz_questions = pool[:quiz_size]
-
-    st.session_state.question_index = 0
+    st.session_state.index = 0
     st.session_state.score = 0
-    st.session_state.correct_answers = 0
-    st.session_state.wrong_answers = 0
+    st.session_state.correct = 0
+    st.session_state.wrong = 0
 
-    st.session_state.answered = False
-    st.session_state.submitted_answer = None
+    st.session_state.submitted = False
+    st.session_state.selected_answer = None
 
-    st.session_state.quiz_started = True
-    st.session_state.quiz_finished = False
+    st.session_state.category = category
+    st.session_state.difficulty = difficulty
 
-    st.session_state.selected_category = category
-    st.session_state.selected_difficulty = difficulty
+    st.session_state.started = True
+    st.session_state.finished = False
+
+    st.session_state.quiz_id += 1
 
     return True
 
 
-def submit_answer(answer):
-    """Evaluate the current answer exactly once."""
+def submit_answer():
 
-    if st.session_state.answered:
+    if st.session_state.submitted:
         return
+
+    answer = st.session_state.selected_answer
 
     if answer is None:
         return
 
-    current_question = st.session_state.quiz_questions[
-        st.session_state.question_index
+    question = st.session_state.questions[
+        st.session_state.index
     ]
 
-    st.session_state.submitted_answer = answer
-    st.session_state.answered = True
+    st.session_state.submitted = True
 
-    if answer == current_question["answer"]:
+    if answer == question["answer"]:
+
         st.session_state.score += 1
-        st.session_state.correct_answers += 1
+        st.session_state.correct += 1
 
     else:
-        st.session_state.wrong_answers += 1
+
+        st.session_state.wrong += 1
 
 
-def next_question():
-    """Move to the next question."""
+def go_next():
 
-    st.session_state.question_index += 1
+    st.session_state.index += 1
 
-    st.session_state.answered = False
-    st.session_state.submitted_answer = None
+    st.session_state.submitted = False
+    st.session_state.selected_answer = None
 
-    if (
-        st.session_state.question_index
-        >= len(st.session_state.quiz_questions)
+    if st.session_state.index >= len(
+        st.session_state.questions
     ):
-        st.session_state.quiz_finished = True
+
+        st.session_state.finished = True
 
 
 def reset_game():
-    """Reset the entire quiz."""
 
-    for key, default_value in DEFAULT_STATE.items():
-        st.session_state[key] = default_value
-
-
-def get_result(score, total):
-    """Generate final result text."""
-
-    if total == 0:
-        return (
-            "No Score",
-            "Start a new challenge to begin.",
-        )
-
-    percentage = (score / total) * 100
-
-    if percentage == 100:
-        return (
-            "🏆 Perfect Score!",
-            "Absolutely outstanding! You got every question correct.",
-        )
-
-    if percentage >= 80:
-        return (
-            "🔥 Excellent Performance!",
-            "Fantastic work. You are clearly a trivia champion.",
-        )
-
-    if percentage >= 60:
-        return (
-            "👏 Great Job!",
-            "Strong performance. Keep pushing for an even higher score.",
-        )
-
-    if percentage >= 40:
-        return (
-            "💪 Good Effort!",
-            "You're making progress. Keep practicing and try again.",
-        )
-
-    return (
-        "📚 Keep Learning!",
-        "Don't give up. Every attempt is another chance to improve.",
-    )
+    st.session_state.started = False
+    st.session_state.finished = False
+    st.session_state.questions = []
+    st.session_state.index = 0
+    st.session_state.score = 0
+    st.session_state.correct = 0
+    st.session_state.wrong = 0
+    st.session_state.submitted = False
+    st.session_state.selected_answer = None
 
 
 # ============================================================
@@ -926,8 +773,15 @@ def get_result(score, total):
 # ============================================================
 
 categories = sorted(
-    {question["category"] for question in QUESTIONS}
+    set(
+        question["category"]
+        for question in QUESTIONS
+    )
 )
+
+category_options = [
+    "All Categories"
+] + categories
 
 difficulty_options = [
     "All Difficulties",
@@ -939,83 +793,71 @@ difficulty_options = [
 
 with st.sidebar:
 
-    st.markdown(
-        '<div class="sidebar-title">🏆 TRIVIA HQ</div>',
-        unsafe_allow_html=True,
+    st.title("🏆 Trivia HQ")
+
+    st.caption(
+        "Configure your challenge"
     )
 
-    st.markdown(
-        '<div class="sidebar-subtitle">'
-        'Configure your challenge'
-        '</div>',
-        unsafe_allow_html=True,
-    )
-
-    category = st.selectbox(
+    selected_category = st.selectbox(
         "Category",
-        ["All Categories"] + categories,
-        index=(
-            ["All Categories"] + categories
-        ).index(
-            st.session_state.selected_category
-        )
-        if st.session_state.selected_category
-        in ["All Categories"] + categories
-        else 0,
+        category_options,
+        index=category_options.index(
+            st.session_state.category
+        ),
+        disabled=st.session_state.started,
     )
 
-    difficulty = st.selectbox(
+    selected_difficulty = st.selectbox(
         "Difficulty",
         difficulty_options,
         index=difficulty_options.index(
-            st.session_state.selected_difficulty
-        )
-        if st.session_state.selected_difficulty
-        in difficulty_options
-        else 0,
+            st.session_state.difficulty
+        ),
+        disabled=st.session_state.started,
     )
 
     st.divider()
 
-    available_questions = get_question_pool(
-        category,
-        difficulty,
+    available = filtered_questions(
+        selected_category,
+        selected_difficulty,
     )
-
-    st.markdown("### 📊 Challenge Info")
 
     st.metric(
         "Available Questions",
-        len(available_questions),
+        len(available),
     )
 
     st.metric(
-        "Questions Per Game",
-        min(10, len(available_questions)),
+        "Questions / Game",
+        min(10, len(available)),
     )
 
     st.divider()
 
-    if st.button(
-        "🚀 Start Challenge",
-        type="primary",
-        use_container_width=True,
-    ):
+    if not st.session_state.started:
 
-        if start_quiz(
-            category,
-            difficulty,
+        if st.button(
+            "🚀 Start Challenge",
+            type="primary",
+            use_container_width=True,
         ):
 
-            st.rerun()
-
-        else:
-
-            st.error(
-                "No questions match those filters."
+            success = start_game(
+                selected_category,
+                selected_difficulty,
             )
 
-    if st.session_state.quiz_started:
+            if success:
+                st.rerun()
+
+            else:
+                st.error(
+                    "No questions match your filters."
+                )
+
+    else:
 
         if st.button(
             "🔄 Reset Game",
@@ -1025,124 +867,81 @@ with st.sidebar:
             reset_game()
             st.rerun()
 
-    st.markdown(
-        """
-        <div class="footer">
-            Ultimate Trivia Challenge<br>
-            Streamlit Edition
-        </div>
-        """,
-        unsafe_allow_html=True,
+    st.divider()
+
+    st.caption(
+        "Ultimate Trivia Challenge"
+    )
+
+    st.caption(
+        "Built with Streamlit"
     )
 
 
 # ============================================================
-# HERO
+# MAIN HEADER
 # ============================================================
 
-st.markdown(
-    dedent(
-        """
-        <div class="hero">
+st.title("🏆 Ultimate Trivia Challenge")
 
-            <div class="hero-title">
-                🏆 ULTIMATE TRIVIA
-            </div>
-
-            <div class="hero-subtitle">
-                Test your knowledge • Challenge yourself •
-                Become the champion
-            </div>
-
-        </div>
-        """
-    ),
-    unsafe_allow_html=True,
+st.caption(
+    "Test your knowledge. Challenge yourself. "
+    "Become the champion."
 )
 
 
 # ============================================================
-# LANDING PAGE
+# LANDING SCREEN
 # ============================================================
 
-if not st.session_state.quiz_started:
+if not st.session_state.started:
+
+    st.info(
+        "👈 Choose your category and difficulty "
+        "from the sidebar, then click **Start Challenge**."
+    )
+
+    st.write("")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown(
-            dedent(
-                """
-                <div class="stat-card">
-                    <div class="stat-value">🌍</div>
-                    <div class="stat-label">
-                        Multiple Categories
-                    </div>
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+
+        st.metric(
+            "🌍 Categories",
+            len(categories),
         )
 
     with col2:
-        st.markdown(
-            dedent(
-                """
-                <div class="stat-card">
-                    <div class="stat-value">⚡</div>
-                    <div class="stat-label">
-                        Multiple Difficulties
-                    </div>
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+
+        st.metric(
+            "🎯 Questions",
+            len(QUESTIONS),
         )
 
     with col3:
-        st.markdown(
-            dedent(
-                """
-                <div class="stat-card">
-                    <div class="stat-value">🎯</div>
-                    <div class="stat-label">
-                        Instant Feedback
-                    </div>
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+
+        st.metric(
+            "⚡ Questions / Game",
+            10,
         )
 
-    st.write("")
+    st.divider()
 
-    st.markdown(
-        dedent(
-            """
-            <div class="info-card">
-
-                <h2>Ready for the challenge?</h2>
-
-                <p>
-                    Choose your category and difficulty from
-                    the sidebar, then launch your trivia
-                    challenge.
-                </p>
-
-                <p>
-                    Every game contains up to
-                    <strong>10 randomly selected questions.</strong>
-                </p>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.subheader(
+        "How to play"
     )
 
-    st.info(
-        "💡 Select your preferences from the sidebar "
-        "and click **Start Challenge**."
+    st.write(
+        """
+        - Select a category.
+        - Choose your difficulty.
+        - Start the challenge.
+        - Select one answer for every question.
+        - Submit your answer.
+        - Review your result.
+        - Try again and beat your score.
+        """
     )
 
     st.stop()
@@ -1152,50 +951,28 @@ if not st.session_state.quiz_started:
 # RESULTS SCREEN
 # ============================================================
 
-if st.session_state.quiz_finished:
+if st.session_state.finished:
 
     score = st.session_state.score
-    total = len(st.session_state.quiz_questions)
+    total = len(st.session_state.questions)
 
     percentage = (
         round((score / total) * 100)
-        if total > 0
+        if total
         else 0
     )
 
-    title, message = get_result(
-        score,
-        total,
+    st.success(
+        "🎉 Challenge Complete!"
     )
 
-    st.markdown(
-        dedent(
-            f"""
-            <div class="result-card">
+    st.header(
+        f"{score} / {total}"
+    )
 
-                <div class="result-score">
-                    {score}/{total}
-                </div>
-
-                <div class="result-title">
-                    {title}
-                </div>
-
-                <div class="result-message">
-                    {message}
-                </div>
-
-                <br>
-
-                <div class="result-message">
-                    Final Accuracy:
-                    <strong>{percentage}%</strong>
-                </div>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.progress(
+        percentage / 100,
+        text=f"Final Accuracy: {percentage}%",
     )
 
     st.write("")
@@ -1204,65 +981,58 @@ if st.session_state.quiz_finished:
 
     with col1:
 
-        st.markdown(
-            dedent(
-                f"""
-                <div class="stat-card">
-
-                    <div class="stat-value">
-                        ✅ {st.session_state.correct_answers}
-                    </div>
-
-                    <div class="stat-label">
-                        Correct
-                    </div>
-
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+        st.metric(
+            "✅ Correct",
+            st.session_state.correct,
         )
 
     with col2:
 
-        st.markdown(
-            dedent(
-                f"""
-                <div class="stat-card">
-
-                    <div class="stat-value">
-                        ❌ {st.session_state.wrong_answers}
-                    </div>
-
-                    <div class="stat-label">
-                        Incorrect
-                    </div>
-
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+        st.metric(
+            "❌ Incorrect",
+            st.session_state.wrong,
         )
 
     with col3:
 
-        st.markdown(
-            dedent(
-                f"""
-                <div class="stat-card">
+        st.metric(
+            "🎯 Accuracy",
+            f"{percentage}%",
+        )
 
-                    <div class="stat-value">
-                        🎯 {percentage}%
-                    </div>
+    st.write("")
 
-                    <div class="stat-label">
-                        Accuracy
-                    </div>
+    if percentage == 100:
 
-                </div>
-                """
-            ),
-            unsafe_allow_html=True,
+        st.balloons()
+
+        st.success(
+            "🏆 PERFECT SCORE! "
+            "You absolutely dominated the challenge."
+        )
+
+    elif percentage >= 80:
+
+        st.success(
+            "🔥 Excellent performance!"
+        )
+
+    elif percentage >= 60:
+
+        st.info(
+            "👏 Great job! Keep improving."
+        )
+
+    elif percentage >= 40:
+
+        st.warning(
+            "💪 Good effort. You can do even better."
+        )
+
+    else:
+
+        st.warning(
+            "📚 Keep learning and try again!"
         )
 
     st.write("")
@@ -1273,9 +1043,9 @@ if st.session_state.quiz_finished:
         use_container_width=True,
     ):
 
-        start_quiz(
-            st.session_state.selected_category,
-            st.session_state.selected_difficulty,
+        start_game(
+            st.session_state.category,
+            st.session_state.difficulty,
         )
 
         st.rerun()
@@ -1287,19 +1057,17 @@ if st.session_state.quiz_finished:
 # ACTIVE QUIZ
 # ============================================================
 
-current_index = st.session_state.question_index
+question = st.session_state.questions[
+    st.session_state.index
+]
 
-current_question = (
-    st.session_state.quiz_questions[
-        current_index
-    ]
+question_number = (
+    st.session_state.index + 1
 )
 
 total_questions = len(
-    st.session_state.quiz_questions
+    st.session_state.questions
 )
-
-question_number = current_index + 1
 
 progress = (
     question_number / total_questions
@@ -1307,96 +1075,37 @@ progress = (
 
 
 # ============================================================
-# TOP STATISTICS
+# TOP METRICS
 # ============================================================
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
 
-    st.markdown(
-        dedent(
-            f"""
-            <div class="stat-card">
-
-                <div class="stat-value">
-                    {question_number}/{total_questions}
-                </div>
-
-                <div class="stat-label">
-                    Question
-                </div>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.metric(
+        "Question",
+        f"{question_number}/{total_questions}",
     )
-
 
 with col2:
 
-    st.markdown(
-        dedent(
-            f"""
-            <div class="stat-card">
-
-                <div class="stat-value">
-                    🏆 {st.session_state.score}
-                </div>
-
-                <div class="stat-label">
-                    Score
-                </div>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.metric(
+        "🏆 Score",
+        st.session_state.score,
     )
-
 
 with col3:
 
-    st.markdown(
-        dedent(
-            f"""
-            <div class="stat-card">
-
-                <div class="stat-value">
-                    ✅ {st.session_state.correct_answers}
-                </div>
-
-                <div class="stat-label">
-                    Correct
-                </div>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.metric(
+        "✅ Correct",
+        st.session_state.correct,
     )
-
 
 with col4:
 
-    st.markdown(
-        dedent(
-            f"""
-            <div class="stat-card">
-
-                <div class="stat-value">
-                    {round(progress * 100)}%
-                </div>
-
-                <div class="stat-label">
-                    Progress
-                </div>
-
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
+    st.metric(
+        "📊 Progress",
+        f"{round(progress * 100)}%",
     )
 
 
@@ -1411,80 +1120,49 @@ st.progress(
 
 
 # ============================================================
-# QUESTION CARD
+# QUESTION
 # ============================================================
 
-difficulty = current_question["difficulty"]
+st.write("")
 
-difficulty_class = {
-    "Easy": "badge-easy",
-    "Medium": "badge-medium",
-    "Hard": "badge-hard",
-}.get(
-    difficulty,
-    "badge-easy",
+st.caption(
+    f"{question['category']}  •  {question['difficulty']}"
 )
 
-
-st.markdown(
-    dedent(
-        f"""
-        <div class="question-card">
-
-            <span class="badge badge-category">
-                {current_question["category"]}
-            </span>
-
-            <span class="badge {difficulty_class}">
-                {difficulty}
-            </span>
-
-            <div class="question-number">
-                Question {question_number}
-            </div>
-
-            <div class="question-text">
-                {current_question["question"]}
-            </div>
-
-        </div>
-        """
-    ),
-    unsafe_allow_html=True,
+st.subheader(
+    question["question"]
 )
 
 
 # ============================================================
-# ANSWER SECTION
+# ANSWERS
 # ============================================================
 
-st.markdown("### Select your answer")
+answer_key = (
+    f"question_{st.session_state.quiz_id}_"
+    f"{st.session_state.index}"
+)
 
 
-# IMPORTANT:
-# A unique key is used for every question.
-#
-# This prevents Streamlit from remembering the previous
-# question's radio selection.
-
-answer_key = f"answer_question_{current_index}"
-
-
-selected_answer = st.radio(
-    "Answer options",
-    current_question["options"],
+selected = st.radio(
+    "Choose one answer:",
+    question["options"],
     index=None,
     key=answer_key,
-    disabled=st.session_state.answered,
-    label_visibility="collapsed",
+    disabled=st.session_state.submitted,
 )
 
 
+# Keep our own state synchronized.
+if selected is not None:
+    st.session_state.selected_answer = selected
+
+
 # ============================================================
-# SUBMIT ANSWER
+# SUBMIT
 # ============================================================
 
-if not st.session_state.answered:
+if not st.session_state.submitted:
 
     if st.button(
         "✓ Submit Answer",
@@ -1492,44 +1170,41 @@ if not st.session_state.answered:
         use_container_width=True,
     ):
 
-        if selected_answer is None:
+        if st.session_state.selected_answer is None:
 
             st.warning(
-                "Please select an answer before submitting."
+                "Please select an answer first."
             )
 
         else:
 
-            submit_answer(
-                selected_answer
-            )
-
+            submit_answer()
             st.rerun()
 
 
 # ============================================================
-# FEEDBACK
+# ANSWER FEEDBACK
 # ============================================================
 
-if st.session_state.answered:
+if st.session_state.submitted:
+
+    correct_answer = question["answer"]
 
     if (
-        st.session_state.submitted_answer
-        == current_question["answer"]
+        st.session_state.selected_answer
+        == correct_answer
     ):
 
         st.success(
             f"🎉 Correct! "
-            f"**{current_question['answer']}** "
-            f"is the right answer."
+            f"The answer is **{correct_answer}**."
         )
 
     else:
 
         st.error(
-            f"❌ Incorrect. "
-            f"The correct answer is "
-            f"**{current_question['answer']}**."
+            f"❌ Not quite. "
+            f"The correct answer is **{correct_answer}**."
         )
 
     st.write("")
@@ -1542,7 +1217,7 @@ if st.session_state.answered:
             use_container_width=True,
         ):
 
-            next_question()
+            go_next()
             st.rerun()
 
     else:
@@ -1553,7 +1228,7 @@ if st.session_state.answered:
             use_container_width=True,
         ):
 
-            next_question()
+            go_next()
             st.rerun()
 
 
@@ -1561,15 +1236,9 @@ if st.session_state.answered:
 # FOOTER
 # ============================================================
 
-st.markdown(
-    dedent(
-        """
-        <div class="footer">
-            🏆 Ultimate Trivia Challenge
-            &nbsp;•&nbsp;
-            Built with Streamlit
-        </div>
-        """
-    ),
-    unsafe_allow_html=True,
+st.divider()
+
+st.caption(
+    "🏆 Ultimate Trivia Challenge • "
+    "Professional Streamlit Edition"
 )
